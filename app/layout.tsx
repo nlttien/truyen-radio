@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthProvider } from '@/contexts/AuthContext';
+import { SpeechProvider } from '@/contexts/SpeechContext';
 
 export const metadata: Metadata = {
   title: "Truyện Radio - Nghe Truyện Online",
@@ -14,7 +16,11 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body className="antialiased">
-        {children}
+        <AuthProvider>
+          <SpeechProvider>
+            {children}
+          </SpeechProvider>
+        </AuthProvider>
       </body>
     </html>
   );
