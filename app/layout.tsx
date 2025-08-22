@@ -1,27 +1,37 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { AuthProvider } from '@/contexts/AuthContext';
-import { SpeechProvider } from '@/contexts/SpeechContext';
+import type React from "react"
+import type { Metadata } from "next"
+import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono"
+import { ThemeProvider } from "@/components/theme-provider"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Truyện Radio - Nghe Truyện Online",
-  description: "Ứng dụng nghe truyện online sử dụng Web Speech API",
-};
+  title: "TruyenRadio - Nghe Truyện Audio Online",
+  description: "Nền tảng nghe truyện audio hàng đầu Việt Nam",
+  generator: "v0.app",
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="vi">
-      <body className="antialiased">
-        <AuthProvider>
-          <SpeechProvider>
-            {children}
-          </SpeechProvider>
-        </AuthProvider>
+    <html lang="vi" suppressHydrationWarning>
+      <head>
+        <style>{`
+html {
+  font-family: ${GeistSans.style.fontFamily};
+  --font-sans: ${GeistSans.variable};
+  --font-mono: ${GeistMono.variable};
+}
+        `}</style>
+      </head>
+      <body className={GeistSans.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
