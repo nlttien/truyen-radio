@@ -26,20 +26,20 @@ import {
 
 export default function TruyenRadioPage() {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration] = useState(19269) // 5:21:09 in seconds
-  const [volume, setVolume] = useState(0.7)
-  const [playbackSpeed, setPlaybackSpeed] = useState(0.9)
+  // const [currentTime, setCurrentTime] = useState(0)
+  // const [duration] = useState(19269) // 5:21:09 in seconds
+  // const [volume, setVolume] = useState(0.7)
+  // const [playbackSpeed, setPlaybackSpeed] = useState(0.9)
 
-  const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    const secs = seconds % 60
-    if (hours > 0) {
-      return `${hours}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-    }
-    return `${minutes}:${secs.toString().padStart(2, "0")}`
-  }
+  // const formatTime = (seconds: number) => {
+  //   const hours = Math.floor(seconds / 3600)
+  //   const minutes = Math.floor((seconds % 3600) / 60)
+  //   const secs = seconds % 60
+  //   if (hours > 0) {
+  //     return `${hours}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+  //   }
+  //   return `${minutes}:${secs.toString().padStart(2, "0")}`
+  // }
 
   const chapters = ["Tập 001", "Tập 002", "Tập 003", "Tập 004", "Tập 005", "Tập 006"]
 
