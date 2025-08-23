@@ -7,70 +7,14 @@ import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Search, Play, Star, Eye, Clock, BookOpen, ChevronRight, Flame } from "lucide-react"
 import Link from "next/link"
+import { getCategories, getFeaturedBooks, getTrendingBooks } from "@/lib/db"
 
-export default function HomePage() {
-  const featuredBooks = [
-    {
-      id: "ta-dung-than-thong-co-ky-thuat",
-      title: "Ta Dũng Thần Thông Có Kỹ Thuật",
-      author: "Thương Thiên Bạch Hạc",
-      category: "Kỳ huyễn",
-      rating: 2.7,
-      views: 917,
-      status: "Hoàn thành",
-      chapters: 10,
-    },
-    {
-      id: "truong-sinh-gia-toc",
-      title: "Trường Sinh Gia Tộc",
-      author: "Tác giả khác",
-      category: "Tiên hiệp",
-      rating: 4.2,
-      views: 1523,
-      status: "Đang cập nhật",
-      chapters: 45,
-    },
-    {
-      id: "tu-tien-tu-hoc-duoc",
-      title: "Tự Tiến: Tự Học Được",
-      author: "Tác giả mới",
-      category: "Đô thị",
-      rating: 3.8,
-      views: 892,
-      status: "Hoàn thành",
-      chapters: 23,
-    },
-  ]
-
-  const trendingBooks = [
-    {
-      id: "trending-1",
-      title: "Đế Bá Thiên Hạ",
-      author: "Mộng Nhập Thần Cơ",
-      category: "Kỳ huyễn",
-      rating: 4.5,
-      views: 2341,
-      isNew: true,
-    },
-    {
-      id: "trending-2",
-      title: "Vạn Cổ Thần Đế",
-      author: "Phi Thiên Ngư",
-      category: "Tiên hiệp",
-      rating: 4.3,
-      views: 1876,
-      isHot: true,
-    },
-  ]
-
-  const categories = [
-    { name: "Kỳ huyễn", count: 245, color: "bg-blue-600" },
-    { name: "Tiên hiệp", count: 189, color: "bg-purple-600" },
-    { name: "Đô thị", count: 156, color: "bg-green-600" },
-    { name: "Lịch sử", count: 98, color: "bg-orange-600" },
-    { name: "Khoa huyễn", count: 87, color: "bg-red-600" },
-    { name: "Võ hiệp", count: 76, color: "bg-teal-600" },
-  ]
+export default async function HomePage() {
+  const [categories, featuredBooks, trendingBooks] = await Promise.all([
+    getCategories(),
+    getFeaturedBooks(),
+    getTrendingBooks(),
+  ])
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -133,16 +77,16 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            {trendingBooks.map((book, index) => (
-              <Link key={index} href={`/${book.id}`}>
+            {trendingBooks.slice(0, 2).map((book, index) => (
+              <Link key={book.id} href={`/${book.slug}`}>
                 <Card className="bg-card border-border p-4 hover:bg-muted/50 cursor-pointer transition-colors">
                   <div className="flex gap-3">
                     <div className="w-16 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex-shrink-0"></div>
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="font-semibold text-base line-clamp-1">{book.title}</h3>
-                        {book.isNew && <Badge className="bg-green-600 text-white text-xs">Mới</Badge>}
-                        {book.isHot && <Badge className="bg-red-600 text-white text-xs">Hot</Badge>}
+                        {index === 0 && <Badge className="bg-green-600 text-white text-xs">Mới</Badge>}
+                        {index === 1 && <Badge className="bg-red-600 text-white text-xs">Hot</Badge>}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">{book.author}</p>
                       <div className="flex items-center justify-between text-xs">
@@ -155,7 +99,7 @@ export default function HomePage() {
                             variant="outline"
                             className="border-blue-500 text-blue-500 dark:border-blue-400 dark:text-blue-400 text-xs"
                           >
-                            {book.category}
+                            {book.category_id}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-1 text-muted-foreground">
@@ -179,16 +123,16 @@ export default function HomePage() {
             </h2>
           </div>
           <div className="flex flex-wrap gap-2">
-            {categories.map((category, index) => (
+            {categories.map((category) => (
               <Button
-                key={index}
+                key={category.id}
                 variant="outline"
                 size="sm"
                 className="h-8 px-3 border-border hover:bg-muted/50 cursor-pointer transition-colors bg-transparent"
               >
-                <div className={`w-2 h-2 ${category.color} rounded-full mr-2`}></div>
+                <div className={`w-2 h-2 rounded-full mr-2`} style={{ backgroundColor: category.color }}></div>
                 <span className="text-sm font-medium">{category.name}</span>
-                <span className="text-xs text-muted-foreground ml-1">({category.count})</span>
+                <span className="text-xs text-muted-foreground ml-1">({category.book_count})</span>
               </Button>
             ))}
           </div>
@@ -208,8 +152,8 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {featuredBooks.map((book, index) => (
-              <Link key={index} href={`/${book.id}`}>
+            {featuredBooks.map((book) => (
+              <Link key={book.id} href={`/${book.slug}`}>
                 <Card className="bg-card border-border p-4 hover:bg-muted/50 cursor-pointer transition-colors h-full flex flex-col">
                   <div className="flex gap-3 mb-3">
                     <div className="w-16 h-22 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex-shrink-0"></div>
@@ -220,7 +164,7 @@ export default function HomePage() {
                         variant="outline"
                         className="border-blue-500 text-blue-500 dark:border-blue-400 dark:text-blue-400 text-xs"
                       >
-                        {book.category}
+                        {book.category_id}
                       </Badge>
                     </div>
                   </div>
@@ -242,7 +186,7 @@ export default function HomePage() {
                         <Clock className="w-3 h-3" />
                         <span>{book.status}</span>
                       </div>
-                      <span className="text-muted-foreground">{book.chapters} tập</span>
+                      <span className="text-muted-foreground">{book.chapter_count} tập</span>
                     </div>
                   </div>
 
